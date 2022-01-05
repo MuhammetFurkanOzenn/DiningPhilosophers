@@ -3,32 +3,54 @@
 #include <pthread.h>
 #include <time.h>
 
+/*
+
+Detayli Hesap Dokumu
+
+-- Masa 1 Hesabi --
+
+Masa Acma : 99.90 + 19.90 (ilk pirinc tutar) tl
+Masa Tazeleme Sayisi : 19.90*(masaTazelemeSayisi[i]) tl
+Ne Kadar Pirinc Yendi : 20 *(neKadarPirincYendi[i]) tl
+
+Total Fiyat : ...
+ 
+*/
+
+
+
 pthread_mutex_t lockMasa1;
-int masa1_m1 =0;
+int masa1_m1 = 0;
+
+int rndNo = 50;
+int rndList[50];
+int neKadarPirincYendi[50]; 
+int masaTazelemeSayisi[50]; 
 
 int r, rnd;
 int i = 0;
 int masaPilav = 13;
+ 
 
 void *masa1(int tid){
 	
 	while(i < masaPilav){
 		if (i < masaPilav){
+				
+			rnd = rndList[i]%6;				// random number between 1-5		
 			
-			srand(time(NULL));	
-			rnd = (rand() % 5 *i % 5)+1;			// random number between 1-5		
-			//printf("\nrnd ::: %d \n\n",rnd);
 			usleep(1000000*rnd);				// sleep for miliseconds
 				
-			pthread_mutex_lock (&lockMasa1);	// THREAD LOCKED
+		pthread_mutex_lock (&lockMasa1);		// THREAD LOCKED
+				
+			r = rndList[i]%2;				// random number between 0-1 means thinkin' or eatin'
 			
-			srand(time(NULL));	
-			r = (rand() % 200 *i % 200)+1;		// random number between 0-1 means thinkin' or eatin'
 			printf("random number : %d\n", r);
 			
-			if (tid == 0)
-				masa1_m1 += 100;
-			printf("index i : %d tid : %d \n", i, tid);
+			if (tid == 0 && r == 1)
+				masa1_m1 = 1;
+			if (masa1_m1 == 1)
+				printf("tid : %d is true \n\n",tid);
 			
 			pthread_mutex_unlock (&lockMasa1);	// THREAD UNLOCKED
 			i++;
@@ -44,6 +66,12 @@ int main (int argc, char **argv){
 	int threadSayi = 8;
 	pthread_t tids[threadSayi];
 	void * status;
+	srand(time(NULL));
+	for (int i = 0 ; i < rndNo ; i++ ){
+		rndList[i] = (rand() % rndNo);
+	}
+	
+	
 	
 	if (pthread_mutex_init (&lockMasa1, NULL) != 0 ){
 		printf("\nmutex init error!\n");
