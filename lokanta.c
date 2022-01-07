@@ -71,10 +71,8 @@ int strtoint( char* charnums)
 
 void *masa1(int tid){
 	
-	while(j < masadaKalanPilav){ 
-		printf("break loop %d\n",breakTheLoop);
-		if (j < masadaKalanPilav ){
-			//printf("numOfPhiGroupTh : %d \n",numOfPhiGroup);	
+	while(j < masadaKalanPilav){
+		if (j < masadaKalanPilav ){	
 			rnd = rndList[i]%6;				// random number between 1-5		
 			
 			usleep(1000000*rnd);				// sleep for miliseconds => rnd means 1-5 ms eat or think time
@@ -84,7 +82,7 @@ void *masa1(int tid){
 			r = rndList[i]%2;				// random number between 0-1 means thinkin' or eatin'
 			
 			if (breakTheLoop == 0){
-				printf("random number : %d tid : %d i : %d masadakiPilav : %d break : %d\n", r, tid+1, i, masadaKalanPilav, breakTheLoop);
+				printf("random number : %d tid : %d i : %d masadakiPilav : %d \n\n", r, tid+1, i, masadaKalanPilav);
 			
 				// if r equals 1 means philosopher eat rice
 				if (tid == 0 && r == 1){
@@ -121,31 +119,35 @@ void *masa1(int tid){
 				}
 				
 				// who's thinkin who's eatin we can see down there
+				
 				if (masa1_m1 == 1)
-					printf("phi1 is true \n\n");
+					printf("phi1 is true	");
 				if (masa1_m2 == 1)
-					printf("phi2 is true \n\n");
+					printf("phi2 is true	");
 				if (masa1_m3 == 1)
-					printf("phi3 is true \n\n");
+					printf("phi3 is true	");
 				if (masa1_m4 == 1)
-					printf("phi4 is true \n\n");
+					printf("phi4 is true	");
 				if (masa1_m5 == 1)
-					printf("phi5 is true \n\n");
+					printf("phi5 is true	");
 				if (masa1_m6 == 1)
-					printf("phi6 is true \n\n");
+					printf("phi6 is true	");
 				if (masa1_m7 == 1)
-					printf("phi7 is true \n\n");
+					printf("phi7 is true	");
 				if (masa1_m8 == 1)
-					printf("phi8 is true \n\n");
-			
+					printf("phi8 is true	");
+				printf("\n");
+				
+				
 				if ( masadaKalanPilav == 0){	// yemek yeme == 19 i == 19
 					if (masa1_m1 == 1 && masa1_m2 == 1 && masa1_m3 == 1 && masa1_m4 == 1 && masa1_m5 == 1 && masa1_m6 == 1 && masa1_m7 == 1 && masa1_m8 == 1){	// if all the philosophers eat some rice than they will leave the table
 						breakTheLoop = 1;
+						printf("\n");
 						printf("-- Masa %d Detayli Hesap Dokumu --\n", masaCounter);
 						printf("Masa Acma : 99.90 tl \n");	
 						printf("Masa Tazeleme Sayisi : %.2f tl \n",(19.90*masa1_yenileme));
 						printf("Pirinc Fiyati : %.2f tl \n",(20*masa1_yenileme*2) + 19.90);
-						printf("Toplam Fiyat : %.2f tl \n",((19.90*masa1_yenileme) + (20*masa1_yenileme*2 + 19.90) + 99.90));
+						printf("Toplam Fiyat : %.2f tl \n\n",((19.90*masa1_yenileme) + (20*masa1_yenileme*2 + 19.90) + 99.90));
 						
 						masaCounter++;
 						}
@@ -183,17 +185,16 @@ void nextIteration (){
 
 int main (int argc, char **argv){  
 	
-	int threadSayi = 8;
-	pthread_t tids[threadSayi];
+	int threadPhilosopher = 8;		//number of philosophers for each table.
+	pthread_t tids[threadPhilosopher];
 	void * status;
 	char phiGroup[20];
 	srand(time(NULL));
 	
 	printf("Kac grup filozofun gelecegini giriniz : ");
 	scanf("%s",&phiGroup);
-	printf("temp :: %s\n",phiGroup);
 	numOfPhiGroup = strtoint(phiGroup);
-	printf("\numOfPhiGroup : %d \n",numOfPhiGroup);
+	
 	for (int i = 0 ; i < rndNo ; i++ ){
 		rndList[i] = (rand() % rndNo);
 	}
@@ -204,11 +205,11 @@ int main (int argc, char **argv){
 			return 1;
 		}
 		
-		for (int i = 0 ; i < threadSayi ; ++i){
+		for (int i = 0 ; i < threadPhilosopher ; ++i){
 			pthread_create(tids+i, NULL, masa1, i);
 		}
 		
-		for (int i = 0 ; i < threadSayi ; ++i){
+		for (int i = 0 ; i < threadPhilosopher ; ++i){
 			pthread_join(tids[i], &status);
 		}
 		
