@@ -162,7 +162,7 @@ void *masa1(int tid){
 					
 				}
 			}
-				pthread_mutex_unlock (&lockMasa1);	// THREAD UNLOCKED
+				pthread_mutex_unlock (&lockMasa1);	// THREAD UNLOCKED 
 				i++;
 		}
 		
@@ -284,6 +284,33 @@ void *masa2(int tid){
    	return NULL;
 } 
 
+int strtoint( char* charnums)
+{
+ int number=0;
+ int index=0;
+ 
+ while(charnums[index])
+ {
+    if(('0'<=charnums[index]) && (charnums[index]<='9'))
+    {
+
+    if(!number)
+        number= ( (int) charnums[index]) - 48;
+    else
+    {
+        number = (number *= 10) + ((int) charnums[index] - 48);
+    }
+    index++;
+         }
+         else
+         {
+            number=-1;
+            break;
+         }
+ }
+ return number;
+}
+
 void nextIteration (){
 	masadaKalanPilav = 20;
 	masa2_yenileme = 0;
@@ -305,9 +332,13 @@ int main (int argc, char **argv){
 	int threadSayi = 8;
 	pthread_t tids[threadSayi];
 	void * status;
+	char phiGroup[20];
 	srand(time(NULL));
+	
 	printf("Kac grup filozofun gelecegini giriniz : ");
-	scanf("%d",&numOfPhiGroup);
+	scanf("%s",&phiGroup);
+	printf("temp :: %s\n",phiGroup);
+	numOfPhiGroup = strtoint(phiGroup);
 	printf("\numOfPhiGroup : %d \n",numOfPhiGroup);
 	for (int i = 0 ; i < rndNo ; i++ ){
 		rndList[i] = (rand() % rndNo);
