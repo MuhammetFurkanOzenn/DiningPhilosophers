@@ -284,6 +284,22 @@ void *masa2(int tid){
    	return NULL;
 } 
 
+void nextIteration (){
+	masadaKalanPilav = 20;
+	masa2_yenileme = 0;
+	breakTheLoop = 0;
+	i=0;
+	numOfPhiGroup--;
+	masa1_m1 = 0;
+	masa1_m2 = 0;
+	masa1_m3 = 0;
+	masa1_m4 = 0;
+	masa1_m5 = 0;
+	masa1_m6 = 0;
+	masa1_m7 = 0;
+	masa1_m8 = 0;
+}
+
 int main (int argc, char **argv){  
 	
 	int threadSayi = 8;
@@ -299,44 +315,45 @@ int main (int argc, char **argv){
 	
 	void * status2;
 	int ss = 1;
-
-	if (pthread_mutex_init (&lockMasa1, NULL) != 0 ){
-		printf("\nmutex init error!\n");
-		return 1;
+	while (numOfPhiGroup > 0){
+		if (pthread_mutex_init (&lockMasa1, NULL) != 0 ){
+			printf("\nmutex init error!\n");
+			return 1;
+		}
+		
+		for (int i = 0 ; i < threadSayi ; ++i){
+			pthread_create(tids+i, NULL, masa1, i);
+		}
+		
+		for (int i = 0 ; i < threadSayi ; ++i){
+			pthread_join(tids[i], &status);
+		}
+		
+		pthread_mutex_destroy(&lockMasa1);
+		
+		nextIteration();
+		
+		/*
+		printf("\n\nmasa1 bitti\n\n");
+		sleep(5);
+		// masa2 threadleri
+		if (pthread_mutex_init (&lockMasa2, NULL) != 0 ){
+			printf("\nmutex init error!\n");
+			return 1;
+		}
+		
+		for (int i = 0 ; i < threadSayi ; ++i){
+			pthread_create(tids+i, NULL, masa2, i);
+		}
+		
+		for (int i = 0 ; i < threadSayi ; ++i){
+			pthread_join(tids[i], &status2);
+		}
+		
+		pthread_mutex_destroy(&lockMasa2); 
+		nextIteration();
+		*/
 	}
-	
-	for (int i = 0 ; i < threadSayi ; ++i){
-		pthread_create(tids+i, NULL, masa1, i);
-	}
-	
-	for (int i = 0 ; i < threadSayi ; ++i){
-		pthread_join(tids[i], &status);
-	}
-	
-	pthread_mutex_destroy(&lockMasa1);
-	
-	masadaKalanPilav = 20;
-	breakTheLoop = 0;
-	i=0;
-	
-	printf("\n\nmasa1 bitti\n\n");
-	sleep(5);
-	
-	if (pthread_mutex_init (&lockMasa2, NULL) != 0 ){
-		printf("\nmutex init error!\n");
-		return 1;
-	}
-	
-	for (int i = 0 ; i < threadSayi ; ++i){
-		pthread_create(tids+i, NULL, masa2, i);
-	}
-	
-	for (int i = 0 ; i < threadSayi ; ++i){
-		pthread_join(tids[i], &status2);
-	}
-	
-	pthread_mutex_destroy(&lockMasa2);  
-
 	exit(0);
 	return 0;
 }
